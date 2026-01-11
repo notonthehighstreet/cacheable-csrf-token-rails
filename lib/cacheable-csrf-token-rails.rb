@@ -5,7 +5,7 @@ module CacheableCSRFTokenRails
 
     ApplicationController.const_set "TOKEN_PLACEHOLDER", "__CROSS_SITE_REQUEST_FORGERY_PROTECTION_TOKEN__"
     base.class_eval do
-      after_filter  :inject_csrf_token
+      after_action  :inject_csrf_token
 
       private
       def inject_csrf_token
@@ -20,7 +20,7 @@ module CacheableCSRFTokenRails
     ActionView::Helpers::UrlHelper.class_eval do
       alias_method :token_tag_rails, :token_tag
 
-      def token_tag(token=nil)
+      def token_tag(token=nil, form_options={})
         if token != false && protect_against_forgery?
           tag(:input, :type => "hidden", :name => request_forgery_protection_token.to_s, :value => ApplicationController::TOKEN_PLACEHOLDER)
         else
